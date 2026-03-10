@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>ココ | 技術部門エンジニア</title>
+    <link rel="icon" href="images/koko_icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="新井鯖技術部門のココの個人リンクページ。GitHub、Arai Server、Steam、Discordなどへのリンクをまとめています。">
 
     <style>
         :root {
-            /* ライトスカイシアン系パレット */
-            --bg-color: #e0fbff;         /* Light cyan base [web:60] */
+            /* テーマ色：ライトスカイシアン + スノーホワイト */
             --bg-grad-1: #e0fbff;
-            --bg-grad-2: #c7e5ff;        /* light blue */
-            --panel-color: #f5fcff;      /* snow white 寄り */
-            --accent-color: #0ea5e9;     /* sky/cyan 中間 [web:55][web:59] */
+            --bg-grad-2: #c7e5ff;
+            --card-bg: #f9fdff;
+            --accent: #0ea5e9;
             --accent-soft: #7dd3fc;
+            --border-soft: rgba(148,163,184,0.6);
             --text-main: #0f172a;
-            --text-sub: #4b5563;
-            --border-soft: rgba(148,163,184,0.55);
-            --shadow-soft: 0 18px 45px rgba(15,23,42,0.12);
+            --text-sub: #6b7280;
+            --shadow-soft: 0 18px 50px rgba(15,23,42,0.18);
         }
 
         * { box-sizing: border-box; }
@@ -29,7 +29,7 @@
             height: 100%;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: var(--text-main);
-            background: radial-gradient(circle at top, var(--bg-grad-2) 0, var(--bg-color) 55%, #c8f5ff 100%);
+            background: radial-gradient(circle at top, var(--bg-grad-2) 0, var(--bg-grad-1) 55%, #c8f5ff 100%);
         }
 
         body {
@@ -38,82 +38,74 @@
             justify-content: center;
         }
 
-        .frame {
-            position: relative;
+        .shell {
             width: 100vw;
             height: 100vh;
-            padding: 0; /* 余白をなくす */
-            overflow: hidden;
-        }
-
-        .frame::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(120deg, rgba(148,163,184,0.18) 1px, transparent 1px),
-                linear-gradient(230deg, rgba(148,163,184,0.12) 1px, transparent 1px);
-            background-size: 120px 120px;
-            opacity: 0.45;
-            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
         }
 
         .card {
+            width: min(420px, 100%);
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px 22px 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255,255,255,0.9);
             position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            gap: 20px;
-            padding: 16px 20px; /* 余白縮小 */
-            margin: 0;          /* frame内いっぱい */
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at top left, rgba(125,211,252,0.45), transparent 60%),
-                        radial-gradient(circle at bottom right, rgba(59,130,246,0.32), transparent 55%),
-                        rgba(245,252,255,0.96);
-            border-radius: 0;
-            box-shadow: none;
-            border-top: 1px solid rgba(255,255,255,0.7);
+            overflow: hidden;
         }
 
-        /* 左側: プロフィール */
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background:
+                radial-gradient(circle at 0 0, rgba(125,211,252,0.4), transparent 55%),
+                radial-gradient(circle at 100% 0, rgba(59,130,246,0.35), transparent 55%);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .card-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* プロフィールブロック */
         .profile {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 12px 10px;
+            margin-bottom: 18px;
         }
 
         .avatar-wrap {
             position: relative;
-            width: 148px;
-            height: 148px;
-            margin-bottom: 12px;
+            width: 110px;
+            height: 110px;
+            margin-bottom: 10px;
         }
 
         .avatar-ring {
             position: absolute;
-            inset: -3px;
+            inset: -2px;
             border-radius: 50%;
-            background: conic-gradient(from 160deg, #38bdf8, #0ea5e9, #38bdf8);
-            filter: blur(1.5px);
+            background: conic-gradient(from 160deg, #38bdf8, #0ea5e9, #22c55e, #38bdf8);
+            filter: blur(1.2px);
             opacity: 0.85;
-        }
-
-        .avatar-border {
-            position: absolute;
-            inset: 4px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 0, #ffffff 0, #eff6ff 40%, #dbeafe 100%);
-            border: 1px solid rgba(148,163,184,0.7);
         }
 
         .avatar {
             position: absolute;
-            inset: 8px;
+            inset: 6px;
             border-radius: 50%;
             overflow: hidden;
+            background: #e5f3ff;
+            border: 1px solid rgba(148,163,184,0.6);
         }
 
         .avatar img {
@@ -125,8 +117,8 @@
 
         .status-pill {
             position: absolute;
-            right: 6px;
-            bottom: 10px;
+            right: -2px;
+            bottom: 4px;
             display: inline-flex;
             align-items: center;
             padding: 3px 8px;
@@ -134,7 +126,7 @@
             font-size: 11px;
             background: rgba(34,197,94,0.96);
             color: #ecfdf5;
-            box-shadow: 0 0 0 2px #e0f2fe;
+            box-shadow: 0 4px 10px rgba(22,163,74,0.4);
         }
 
         .status-dot {
@@ -146,99 +138,62 @@
         }
 
         .name {
-            font-size: 30px;
+            font-size: 24px;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-top: 6px;
-            margin-bottom: 4px;
+            margin-top: 4px;
         }
 
         .role {
-            font-size: 13px;
+            font-size: 12px;
             color: #0284c7;
-            font-weight: 600;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
+            margin-top: 2px;
         }
 
         .bio {
-            margin-top: 16px;
+            margin-top: 12px;
             font-size: 13px;
             line-height: 1.6;
             color: var(--text-sub);
         }
 
-        .games {
-            margin-top: 16px;
+        .chips-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             justify-content: center;
+            margin-top: 12px;
         }
 
-        .game-tag {
-            padding: 4px 10px;
+        .chip {
+            padding: 3px 8px;
             border-radius: 999px;
             font-size: 11px;
-            border: 1px solid rgba(125,211,252,0.9);
+            border: 1px solid rgba(148,163,184,0.65);
+            background: rgba(255,255,255,0.9);
+        }
+
+        .chip.game {
+            border-color: rgba(125,211,252,0.9);
             background: linear-gradient(135deg, #e0f2fe, #bae6fd);
             color: #0369a1;
         }
 
-        .skills {
-            margin-top: 18px;
-            width: 100%;
-        }
-
-        .skills-title {
+        .section-title {
             font-size: 11px;
-            letter-spacing: 0.16em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: #64748b;
-            margin-bottom: 2px;
+            color: #94a3b8;
+            margin-top: 18px;
+            margin-bottom: 6px;
         }
 
-        .skill-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .skill-chip {
-            padding: 3px 9px;
-            border-radius: 999px;
-            font-size: 11px;
-            background: #e0f2fe;
-            border: 1px solid rgba(148,163,184,0.65);
-            color: #0f172a;
-        }
-
-        /* 右側: リンク一覧 */
-        .links-area {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 12px 6px 12px 4px;
-        }
-
-        .links-header {
-            margin-bottom: 10px;
-        }
-
-        .links-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .links-sub {
-            font-size: 13px;
-            color: var(--text-sub);
-        }
-
-        .link-list {
-            margin-top: 8px;
+        /* リンクブロック */
+        .links {
+            margin-top: 6px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -249,23 +204,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 9px 12px;
+            padding: 10px 12px;
             border-radius: 14px;
-            background: linear-gradient(135deg, #ffffff, #e0f2fe);
-            border: 1px solid rgba(148,163,184,0.75);
+            background: rgba(255,255,255,0.96);
+            border: 1px solid var(--border-soft);
             cursor: pointer;
-            overflow: hidden;
-            transition: transform 0.14s ease-out, box-shadow 0.14s ease-out, border-color 0.14s, background 0.14s;
-        }
-
-        .link-item::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 0 0, rgba(125,211,252,0.45), transparent 55%);
-            opacity: 0;
-            transition: opacity 0.16s;
-            pointer-events: none;
+            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s, background 0.15s;
         }
 
         .link-main {
@@ -275,9 +219,9 @@
         }
 
         .link-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -304,214 +248,175 @@
         .link-meta {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-size: 11px;
-            color: #64748b;
+            color: #94a3b8;
+        }
+
+        .badge {
+            padding: 2px 7px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.7);
+            background: rgba(248,250,252,0.95);
         }
 
         .link-arrow svg {
             width: 16px;
             height: 16px;
-            stroke: #64748b;
+            stroke: #94a3b8;
         }
 
         .link-item:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 25px rgba(15,23,42,0.15);
+            box-shadow: 0 12px 30px rgba(15,23,42,0.18);
             border-color: #38bdf8;
-            background: linear-gradient(135deg, #f9fdff, #dbeafe);
-        }
-
-        .link-item:hover::before {
-            opacity: 1;
-        }
-
-        .badge {
-            padding: 2px 8px;
-            border-radius: 999px;
-            border: 1px solid rgba(148,163,184,0.6);
-            background: rgba(255,255,255,0.9);
+            background: linear-gradient(135deg, #f9fdff, #e0f2fe);
         }
 
         .footer {
-            margin-top: auto;
-            padding-top: 10px;
+            margin-top: 14px;
             font-size: 11px;
-            color: #64748b;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            color: #94a3b8;
+            text-align: center;
         }
 
-        .dot-row {
-            display: flex;
-            gap: 3px;
-            align-items: center;
-        }
-
-        .dot {
-            width: 4px;
-            height: 4px;
-            border-radius: 999px;
-            background: rgba(148,163,184,0.8);
-        }
-
-        /* スマホ対応（縦レイアウト） */
-        @media (max-width: 820px) {
+        @media (max-width: 480px) {
             .card {
-                grid-template-columns: 1fr;
-                gap: 16px;
-                padding: 14px 12px;
-            }
-            .profile {
-                padding-bottom: 4px;
+                border-radius: 18px;
+                padding: 20px 16px 16px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="frame">
-    <div class="card">
-        <!-- 左側: プロフィール -->
-        <section class="profile" aria-label="プロフィール">
-            <div class="avatar-wrap">
-                <div class="avatar-ring"></div>
-                <div class="avatar-border"></div>
-                <div class="avatar">
-                    <img src="images/koko_icon.png" alt="ココのアイコン">
+<div class="shell">
+    <main class="card" aria-label="Koko link collection">
+        <div class="card-inner">
+            <!-- プロフィール -->
+            <section class="profile" aria-label="プロフィール">
+                <div class="avatar-wrap">
+                    <div class="avatar-ring"></div>
+                    <div class="avatar">
+                        <img src="images/koko_icon.png" alt="ココのアイコン">
+                    </div>
+                    <div class="status-pill">
+                        <span class="status-dot"></span>
+                        <span>新井鯖技術部門</span>
+                    </div>
                 </div>
-                <div class="status-pill">
-                    <span class="status-dot"></span>
-                    <span>新井鯖技術部門</span>
+
+                <div class="name">KOKO</div>
+                <div class="role">Arai Server Technical Division</div>
+
+                <p class="bio">
+                    新井鯖の技術部門に所属し、サーバーの技術基盤の設計・開発・保守を担当しています。
+                    Python / C / JavaScript / HTML / CSS / JSON / mcfunction を用いた
+                    Minecraft向けの仕組み作りが得意です。
+                </p>
+
+                <div class="chips-row">
+                    <span class="chip game">Minecraft Java Edition</span>
+                    <span class="chip game">Apex Legends</span>
                 </div>
+
+                <h2 class="section-title">STACK</h2>
+                <div class="chips-row" aria-label="スキルセット">
+                    <span class="chip">Python</span>
+                    <span class="chip">C</span>
+                    <span class="chip">JavaScript</span>
+                    <span class="chip">HTML / CSS</span>
+                    <span class="chip">JSON</span>
+                    <span class="chip">mcfunction</span>
+                    <span class="chip">Server Ops</span>
+                </div>
+            </section>
+
+            <!-- リンク -->
+            <section aria-label="リンク集">
+                <h2 class="section-title">LINKS</h2>
+                <div class="links">
+                    <!-- Arai Server -->
+                    <article class="link-item" data-href="https://arai-server.pages.dev/">
+                        <div class="link-main">
+                            <div class="link-icon">
+                                <i data-lucide="server"></i>
+                            </div>
+                            <div>
+                                <div class="link-text-title">Arai Server</div>
+                                <div class="link-text-desc">新井鯖公式サイト。技術部門として参加しているMinecraftサーバー。</div>
+                            </div>
+                        </div>
+                        <div class="link-meta">
+                            <span class="badge">Minecraft</span>
+                            <span class="link-arrow"><i data-lucide="arrow-up-right"></i></span>
+                        </div>
+                    </article>
+
+                    <!-- GitHub -->
+                    <article class="link-item" data-href="https://github.com/kokopscraft">
+                        <div class="link-main">
+                            <div class="link-icon">
+                                <i data-lucide="github"></i>
+                            </div>
+                            <div>
+                                <div class="link-text-title">GitHub</div>
+                                <div class="link-text-desc">開発中のツールやサーバー関連スクリプトを公開しています。</div>
+                            </div>
+                        </div>
+                        <div class="link-meta">
+                            <span class="badge">Code</span>
+                            <span class="link-arrow"><i data-lucide="arrow-up-right"></i></span>
+                        </div>
+                    </article>
+
+                    <!-- Discord -->
+                    <article class="link-item" data-href="https://discordapp.com/users/@1195926029185843235">
+                        <div class="link-main">
+                            <div class="link-icon">
+                                <i data-lucide="message-circle"></i>
+                            </div>
+                            <div>
+                                <div class="link-text-title">Discord</div>
+                                <div class="link-text-desc">連絡・通話はこちらから。新井鯖関連の連絡もここで受け付けています。</div>
+                            </div>
+                        </div>
+                        <div class="link-meta">
+                            <span class="badge">Contact</span>
+                            <span class="link-arrow"><i data-lucide="arrow-up-right"></i></span>
+                        </div>
+                    </article>
+
+                    <!-- Steam -->
+                    <article class="link-item" data-href="https://steamcommunity.com/profiles/76561199753320100">
+                        <div class="link-main">
+                            <div class="link-icon">
+                                <i data-lucide="gamepad-2"></i>
+                            </div>
+                            <div>
+                                <div class="link-text-title">Steam</div>
+                                <div class="link-text-desc">主にApex Legendsなど、PCゲーム用のアカウントです。</div>
+                            </div>
+                        </div>
+                        <div class="link-meta">
+                            <span class="badge">Game</span>
+                            <span class="link-arrow"><i data-lucide="arrow-up-right"></i></span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <div class="footer">
+                © 2026 Koko. All rights reserved.
             </div>
-
-            <div class="name">KOKO</div>
-            <div class="role">Arai Server Technical Division</div>
-
-            <p class="bio">
-                新井鯖の技術部門に所属し、サーバーの技術基盤の設計・開発・保守を担当しています。
-                Python / C / JavaScript / HTML / CSS / JSON / mcfunction を用いた
-                Minecraft向けの仕組み作りが得意です。
-            </p>
-
-            <div class="games" aria-label="好きなゲーム">
-                <span class="game-tag">Minecraft Java Edition</span>
-                <span class="game-tag">Apex Legends</span>
-            </div>
-
-            <div class="skills" aria-label="スキルセット">
-                <div class="skills-title">STACK</div>
-                <div class="skill-list">
-                    <span class="skill-chip">Python</span>
-                    <span class="skill-chip">C</span>
-                    <span class="skill-chip">JavaScript</span>
-                    <span class="skill-chip">HTML / CSS</span>
-                    <span class="skill-chip">JSON</span>
-                    <span class="skill-chip">mcfunction</span>
-                    <span class="skill-chip">Server Ops</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 右側: リンク一覧 -->
-        <section class="links-area" aria-label="リンク集">
-            <header class="links-header">
-                <h2 class="links-title">Links</h2>
-                <div class="links-sub">
-                    ココに関する主要なリンクをまとめています。  
-                    新井鯖関連・開発リポジトリ・ゲームアカウントなど。
-                </div>
-            </header>
-
-            <div class="link-list">
-                <!-- Arai Server -->
-                <article class="link-item" data-href="https://arai-server.pages.dev/">
-                    <div class="link-main">
-                        <div class="link-icon">
-                            <i data-lucide="server"></i>
-                        </div>
-                        <div>
-                            <div class="link-text-title">Arai Server</div>
-                            <div class="link-text-desc">新井鯖公式サイト。技術部門として参加しているMinecraftサーバー。</div>
-                        </div>
-                    </div>
-                    <div class="link-meta">
-                        <span class="badge">Minecraft</span>
-                        <span class="link-arrow"><i data-lucide="arrow-up-right"></i></span>
-                    </div>
-                </article>
-
-                <!-- GitHub -->
-                <article class="link-item" data-href="https://github.com/kokopscraft">
-                    <div class="link-main">
-                        <div class="link-icon">
-                            <i data-lucide="github"></i>
-                        </div>
-                        <div>
-                            <div class="link-text-title">GitHub</div>
-                            <div class="link-text-desc">開発中のツールやサーバー関連スクリプトを公開しています。</div>
-                        </div>
-                    </div>
-                    <div class="link-meta">
-                        <span class="badge">Code</span>
-                        <span class="link-arrow"><i data-lucide="arrow-up-right"></i></span>
-                    </div>
-                </article>
-
-                <!-- Discord -->
-                <article class="link-item" data-href="https://discordapp.com/users/@1195926029185843235">
-                    <div class="link-main">
-                        <div class="link-icon">
-                            <i data-lucide="message-circle"></i>
-                        </div>
-                        <div>
-                            <div class="link-text-title">Discord</div>
-                            <div class="link-text-desc">連絡・通話はこちらから。新井鯖関連の連絡もここで受け付けています。</div>
-                        </div>
-                    </div>
-                    <div class="link-meta">
-                        <span class="badge">Contact</span>
-                        <span class="link-arrow"><i data-lucide="arrow-up-right"></i></span>
-                    </div>
-                </article>
-
-                <!-- Steam -->
-                <article class="link-item" data-href="https://steamcommunity.com/profiles/76561199753320100">
-                    <div class="link-main">
-                        <div class="link-icon">
-                            <i data-lucide="gamepad-2"></i>
-                        </div>
-                        <div>
-                            <div class="link-text-title">Steam</div>
-                            <div class="link-text-desc">主にApex Legendsなど、PCゲーム用のアカウントです。</div>
-                        </div>
-                    </div>
-                    <div class="link-meta">
-                        <span class="badge">Game</span>
-                        <span class="link-arrow"><i data-lucide="arrow-up-right"></i></span>
-                    </div>
-                </article>
-            </div>
-
-            <footer class="footer">
-                <div class="dot-row" aria-hidden="true">
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                </div>
-                <div>© 2026 Koko. All rights reserved.</div>
-            </footer>
-        </section>
-    </div>
+        </div>
+    </main>
 </div>
 
 <!-- Lucide本体（CDN） -->
 <script src="https://unpkg.com/lucide@latest"></script>
-
 <script>
-    // クリックで新しいタブに開く
+    // カードクリックで新しいタブに開く
     document.querySelectorAll('.link-item').forEach(function (item) {
         item.addEventListener('click', function () {
             var url = item.getAttribute('data-href');
@@ -519,7 +424,6 @@
             window.open(url, '_blank', 'noopener');
         });
 
-        // キーボード操作対応
         item.setAttribute('tabindex', '0');
         item.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -529,7 +433,7 @@
         });
     });
 
-    // Lucideアイコンを生成（data-lucide属性を持つ要素をSVG化）
+    // Lucideアイコン生成（data-lucide属性を持つ要素をSVG化）
     lucide.createIcons(); // [web:45][web:64]
 </script>
 
