@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英単語クイズ</title>
+<style>
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 30px;
+    width: 90%;
+    max-width: 480px;
+    text-align: center;
+  }
+  h1 {
+    font-size: 20px;
+    color: #2b3a4a;
+    margin-bottom: 5px;
+  }
+  .stats {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 15px;
+  }
+  .mode-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  select, .review-btn {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .review-btn.active {
+    background: #3b6ea5;
+    color: #fff;
+    border-color: #3b6ea5;
+  }
+  .card {
+    background: #eef2f7;
+    border-radius: 10px;
+    padding: 30px 15px;
+    margin-bottom: 20px;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #1a2b3c;
+    word-break: break-word;
+  }
+  .pos-tag {
+    font-size: 13px;
+    color: #6c7a89;
+    margin-bottom: 10px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  .option-btn {
+    background: #fff;
+    border: 2px solid #d0d8e0;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .option-btn:hover {
+    border-color: #7aa7d9;
+    background: #f0f7ff;
+  }
+  .option-btn.correct {
+    background: #d7f7dd;
+    border-color: #4caf50;
+    color: #1b5e20;
+  }
+  .option-btn.wrong {
+    background: #fde0e0;
+    border-color: #e53935;
+    color: #b71c1c;
+  }
+  .option-btn.disabled {
+    pointer-events: none;
+  }
+  #feedback {
+    min-height: 24px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  #next-btn {
+    background: #3b6ea5;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 15px;
+    cursor: pointer;
+    display: none;
+  }
+  #next-btn:hover {
+    background: #2f5a87;
+  }
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: #888;
+  }
+  .badge {
+    display: inline-block;
+    background: #eef2f7;
+    border-radius: 20px;
+    padding: 4px 12px;
+    margin: 0 4px;
+  }
+  #reset-btn {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 4px 12px;
+    cursor: pointer;
+    color: #666;
+  }
+  #empty-review {
+    font-size: 14px;
+    color: #888;
+    margin: 20px 0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>英単語クイズ</h1>
+  <div class="stats">
+    <span class="badge">問題 <span id="q-num">1</span> / <span id="q-total">89</span></span>
+    <span class="badge">正解数 <span id="score">0</span></span>
+    <span class="badge">連続 <span id="streak">0</span></span>
+  </div>
+  <div class="mode-row">
+    <select id="mode-select">
+      <option value="word2meaning">単語 → 意味</option>
+      <option value="meaning2word">意味 → 単語</option>
+    </select>
+    <button id="review-btn" class="review-btn">苦手な単語のみ (<span id="wrong-count">0</span>)</button>
+  </div>
+  <div id="quiz-body">
+    <div class="pos-tag" id="pos-tag"></div>
+    <div class="card" id="question-text">Loading...</div>
+    <div class="options" id="options"></div>
+    <div id="feedback"></div>
+    <button id="next-btn">次の問題 →</button>
+  </div>
+  <div id="empty-review" style="display:none;">苦手な単語はまだありません。通常モードで練習してみましょう。</div>
+  <div class="controls">
+    <button id="reset-btn">記録をリセット</button>
+    <span></span>
+  </div>
+</div>
+
+<script>
+const WORDS = [{"word": "luggage", "pos": "名", "meaning": "旅行手荷物"}, {"word": "fare", "pos": "名", "meaning": "運賃"}, {"word": "commuter", "pos": "名", "meaning": "通勤・通学者"}, {"word": "occupied", "pos": "形", "meaning": "埋まっている"}, {"word": "platform", "pos": "名", "meaning": "駅のプラットホーム、台、壇"}, {"word": "generally", "pos": "副", "meaning": "概して、一般的に"}, {"word": "board", "pos": "動", "meaning": "乗り込む"}, {"word": "souvenir", "pos": "名", "meaning": "お土産"}, {"word": "arrival", "pos": "名", "meaning": "到着"}, {"word": "departure", "pos": "名", "meaning": "出発"}, {"word": "sharply", "pos": "副", "meaning": "急激に"}, {"word": "considerable", "pos": "形", "meaning": "かなりの、相当な"}, {"word": "cross", "pos": "動", "meaning": "横断する"}, {"word": "load", "pos": "動", "meaning": "積み込む"}, {"word": "bound for", "pos": "形容詞句", "meaning": "行き先"}, {"word": "attendant", "pos": "名", "meaning": "係員"}, {"word": "extensive", "pos": "形", "meaning": "大規模な、徹底的な"}, {"word": "round-trip", "pos": "名詞句", "meaning": "往復"}, {"word": "pedestrian", "pos": "名", "meaning": "歩行者"}, {"word": "vehicle", "pos": "名", "meaning": "車両"}, {"word": "express", "pos": "名", "meaning": "急行、速達"}, {"word": "passenger", "pos": "名", "meaning": "乗客"}, {"word": "functionally", "pos": "副", "meaning": "機能的には"}, {"word": "available", "pos": "形", "meaning": "利用可能な"}, {"word": "train", "pos": "動", "meaning": "訓練・研修する"}, {"word": "book", "pos": "動", "meaning": "予約する"}, {"word": "shuttle", "pos": "名", "meaning": "往復運転（シャトルバス）"}, {"word": "seating", "pos": "名", "meaning": "座席"}, {"word": "agent", "pos": "名", "meaning": "代理・仲介業者"}, {"word": "overlook", "pos": "動", "meaning": "見下ろす、見過ごす"}, {"word": "accommodation", "pos": "名", "meaning": "宿泊"}, {"word": "facing", "pos": "前", "meaning": "向かい合う"}, {"word": "customize", "pos": "動", "meaning": "合わせて作る"}, {"word": "landmark", "pos": "名", "meaning": "名所、旧跡"}, {"word": "admission", "pos": "名", "meaning": "入会、入場"}, {"word": "fountain", "pos": "名", "meaning": "噴水"}, {"word": "pick up", "pos": "動詞句", "meaning": "受け取る"}, {"word": "How about", "pos": "", "meaning": "どうでしょうか"}, {"word": "appreciate", "pos": "動", "meaning": "感謝する"}, {"word": "reserve", "pos": "動", "meaning": "予約する、取り置きする"}, {"word": "exhibition", "pos": "名", "meaning": "展示会"}, {"word": "meal", "pos": "名", "meaning": "食事"}, {"word": "server", "pos": "名", "meaning": "給仕係"}, {"word": "I'm afraid", "pos": "", "meaning": "残念ながら"}, {"word": "suggest", "pos": "動", "meaning": "提案する"}, {"word": "ride", "pos": "名・動", "meaning": "乗物に乗ること、乗る"}, {"word": "beverage", "pos": "名", "meaning": "飲み物"}, {"word": "buffet", "pos": "名", "meaning": "ビュッフェ（バイキング）"}, {"word": "reception", "pos": "名", "meaning": "受付、歓迎・祝賀会"}, {"word": "satisfy", "pos": "動", "meaning": "満たす"}, {"word": "inform", "pos": "動", "meaning": "伝える"}, {"word": "rest", "pos": "名・動", "meaning": "休憩、休憩する"}, {"word": "lab-grown chicken", "pos": "名詞句", "meaning": "培養チキン"}, {"word": "approve", "pos": "動", "meaning": "承認する"}, {"word": "cell", "pos": "名", "meaning": "細胞"}, {"word": "cultivate", "pos": "動", "meaning": "培養する"}, {"word": "texture", "pos": "名", "meaning": "食感"}, {"word": "impact", "pos": "名", "meaning": "影響"}, {"word": "contribute", "pos": "動", "meaning": "貢献する"}, {"word": "sustainable", "pos": "形", "meaning": "持続可能な"}, {"word": "department", "pos": "名", "meaning": "部署"}, {"word": "cell-cultured", "pos": "形容詞句", "meaning": "培養された"}, {"word": "greenhouse gas", "pos": "名詞句", "meaning": "温室効果ガス"}, {"word": "emission", "pos": "名", "meaning": "排出"}, {"word": "phasing out", "pos": "名", "meaning": "徐々に廃止すること"}, {"word": "thus far", "pos": "副詞句", "meaning": "今までのところ"}, {"word": "alleviate", "pos": "動", "meaning": "緩和する"}, {"word": "issue", "pos": "名", "meaning": "問題"}, {"word": "note that ...", "pos": "", "meaning": "〜に注意してください"}, {"word": "gradient", "pos": "名", "meaning": "勾配"}, {"word": "various iterations", "pos": "名", "meaning": "様々なバリエーション"}, {"word": "cultivated meat", "pos": "名詞句", "meaning": "培養肉"}, {"word": "discover", "pos": "動", "meaning": "発見する"}, {"word": "accidentally", "pos": "副", "meaning": "偶然に"}, {"word": "black hole", "pos": "名詞句", "meaning": "ブラックホール"}, {"word": "form", "pos": "動", "meaning": "作る、形成する"}, {"word": "investigate", "pos": "動", "meaning": "調査する"}, {"word": "telescope", "pos": "名", "meaning": "望遠鏡"}, {"word": "image", "pos": "名", "meaning": "画像、映像"}, {"word": "expand", "pos": "動", "meaning": "広げる"}, {"word": "zip through", "pos": "動詞句", "meaning": "高速で通り過ぎる"}, {"word": "unbalanced", "pos": "形", "meaning": "不均衡な"}, {"word": "light trail", "pos": "名詞句", "meaning": "光が通った跡"}, {"word": "cosmic ray", "pos": "名詞句", "meaning": "宇宙線"}, {"word": "artifact", "pos": "名", "meaning": "人工のもの"}, {"word": "observatory", "pos": "名", "meaning": "天文台"}, {"word": "diameter", "pos": "名", "meaning": "直径"}, {"word": "Milky Way galaxy", "pos": "名詞句", "meaning": "天の川銀河"}, {"word": "wake", "pos": "名", "meaning": "ものが通った跡"}];
+
+let mode = "word2meaning";
+let reviewMode = false;
+let activeSet = WORDS.map((_, i) => i);
+let order = [];
+let currentIndex = 0;
+let score = 0;
+let streak = 0;
+let wrongBank = JSON.parse(localStorage.getItem('wrongBank') || '{}');
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getWrongIndices() {
+  return WORDS
+    .map((w, i) => i)
+    .filter(i => wrongBank[WORDS[i].word]);
+}
+
+function buildActiveSet() {
+  activeSet = reviewMode ? getWrongIndices() : WORDS.map((_, i) => i);
+}
+
+function buildOrder() {
+  buildActiveSet();
+  order = shuffle(activeSet.slice());
+  currentIndex = 0;
+}
+
+function pickDistractors(correctIdx, count) {
+  const pool = WORDS.map((_, i) => i).filter(i => i !== correctIdx);
+  return shuffle(pool).slice(0, count);
+}
+
+function updateWrongLabel() {
+  const count = getWrongIndices().length;
+  document.getElementById('wrong-count').textContent = count;
+}
+
+function renderQuestion() {
+  updateWrongLabel();
+
+  if (reviewMode && activeSet.length === 0) {
+    document.getElementById('quiz-body').style.display = 'none';
+    document.getElementById('empty-review').style.display = 'block';
+    document.getElementById('q-num').textContent = 0;
+    document.getElementById('q-total').textContent = 0;
+    return;
+  }
+  document.getElementById('quiz-body').style.display = 'block';
+  document.getElementById('empty-review').style.display = 'none';
+
+  if (currentIndex >= order.length) {
+    buildOrder();
+    if (order.length === 0) {
+      renderQuestion();
+      return;
+    }
+  }
+
+  const idx = order[currentIndex];
+  const item = WORDS[idx];
+  document.getElementById('q-num').textContent = currentIndex + 1;
+  document.getElementById('q-total').textContent = order.length;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const distractors = pickDistractors(idx, 3);
+  let optionIdxs = shuffle([idx, ...distractors]);
+
+  if (mode === "word2meaning") {
+    document.getElementById('pos-tag').textContent = item.pos ? "(" + item.pos + ")" : "";
+    document.getElementById('question-text').textContent = item.word;
+  } else {
+    document.getElementById('pos-tag').textContent = "";
+    document.getElementById('question-text').textContent = item.meaning;
+  }
+
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+  optionIdxs.forEach(optIdx => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = mode === "word2meaning" ? WORDS[optIdx].meaning : WORDS[optIdx].word;
+    btn.onclick = () => handleAnswer(btn, optIdx, idx);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+function handleAnswer(btn, chosenIdx, correctIdx) {
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.classList.add('disabled'));
+
+  const word = WORDS[correctIdx].word;
+
+  if (chosenIdx === correctIdx) {
+    btn.classList.add('correct');
+    document.getElementById('feedback').textContent = '✅ 正解！';
+    document.getElementById('feedback').style.color = '#2e7d32';
+    score++;
+    streak++;
+    if (wrongBank[word]) {
+      delete wrongBank[word];
+    }
+  } else {
+    btn.classList.add('wrong');
+    buttons.forEach(b => {
+      if (b.textContent === (mode === "word2meaning" ? WORDS[correctIdx].meaning : WORDS[correctIdx].word)) {
+        b.classList.add('correct');
+      }
+    });
+    document.getElementById('feedback').textContent = '❌ 不正解。正解: ' + (mode === "word2meaning" ? WORDS[correctIdx].meaning : WORDS[correctIdx].word);
+    document.getElementById('feedback').style.color = '#c62828';
+    streak = 0;
+    wrongBank[word] = (wrongBank[word] || 0) + 1;
+  }
+
+  localStorage.setItem('wrongBank', JSON.stringify(wrongBank));
+  document.getElementById('score').textContent = score;
+  document.getElementById('streak').textContent = streak;
+  updateWrongLabel();
+  document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+document.getElementById('next-btn').onclick = () => {
+  currentIndex++;
+  renderQuestion();
+};
+
+document.getElementById('mode-select').onchange = (e) => {
+  mode = e.target.value;
+  buildOrder();
+  renderQuestion();
+};
+
+document.getElementById('review-btn').onclick = () => {
+  reviewMode = !reviewMode;
+  document.getElementById('review-btn').classList.toggle('active', reviewMode);
+  buildOrder();
+  renderQuestion();
+};
+
+document.getElementById('reset-btn').onclick = () => {
+  if (confirm('正解数・連続記録・苦手単語の記録をリセットしますか？')) {
+    score = 0;
+    streak = 0;
+    wrongBank = {};
+    localStorage.setItem('wrongBank', '{}');
+    document.getElementById('score').textContent = score;
+    document.getElementById('streak').textContent = streak;
+    reviewMode = false;
+    document.getElementById('review-btn').classList.remove('active');
+    buildOrder();
+    renderQuestion();
+  }
+};
+
+buildOrder();
+renderQuestion();
+</script>
+</body>
+</html>
