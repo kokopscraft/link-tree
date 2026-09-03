@@ -1,447 +1,426 @@
 <!DOCTYPE html>
-<html lang="ja" data-theme="dark">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ココ | 技術部門エンジニア</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="新井鯖技術部門のココの個人リンクページ。GitHub、Arai Server、Steam、Discordなどへのリンクをまとめています。">
+  <title>ココ | 新井鯖 技術部門</title>
+  <meta name="description" content="ココのリンクページ。新井鯖の公式サイト、GitHub、Discord、Steam へのリンクをまとめています。">
+
+  <!-- OGP / Twitter Card：DiscordやXで共有したときのカード表示用 -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ココ | 新井鯖 技術部門">
+  <meta property="og:description" content="新井鯖の技術部門。サーバーの固有アドオンの作成や編集、公式Webサイトの更新を担当しています。">
+  <meta property="og:image" content="./images/koko_icon.png">
+  <meta name="twitter:card" content="summary">
+
+  <meta name="theme-color" content="#171c22" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#eae8e3" media="(prefers-color-scheme: light)">
+
   <link rel="icon" type="image/png" href="./images/koko_icon.png">
   <link rel="apple-touch-icon" href="./images/koko_icon.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
+    /* =========================================================
+       Design tokens
+       石ブロックの色味をベースに、灯り（アンバー）を1点だけ効かせる。
+       角丸はすべて 4–10px の小さめで統一し、円形は使わない。
+       ========================================================= */
     :root {
-      --text-xs:   clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
-      --text-sm:   clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
-      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-      --text-lg:   clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
-      --text-xl:   clamp(1.5rem, 1.2rem + 1.25vw, 2rem);
+      --font: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic",
+              "Noto Sans JP", system-ui, sans-serif;
 
-      --space-1:0.25rem; --space-2:0.5rem; --space-3:0.75rem;
-      --space-4:1rem;    --space-5:1.25rem; --space-6:1.5rem;
-      --space-8:2rem;
+      --fs-name:  clamp(2rem, 1.55rem + 2.2vw, 2.6rem);
+      --fs-body:  0.9375rem;
+      --fs-title: 1rem;
+      --fs-note:  0.8125rem;
+      --fs-micro: 0.75rem;
 
-      --radius-sm:0.375rem; --radius-md:0.5rem;
-      --radius-lg:0.75rem;  --radius-xl:1rem;
-      --radius-full:9999px;
+      --sp-1: 0.25rem; --sp-2: 0.5rem;  --sp-3: 0.75rem;
+      --sp-4: 1rem;    --sp-5: 1.25rem; --sp-6: 1.5rem;
+      --sp-7: 1.75rem; --sp-8: 2rem;    --sp-10: 2.5rem;
 
-      --font-mono: 'IBM Plex Mono', 'Consolas', monospace;
-      --font-body: 'IBM Plex Sans JP', 'Hiragino Sans', sans-serif;
-      --transition: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+      --r-xs: 3px; --r-sm: 5px; --r-md: 8px; --r-lg: 10px;
+
+      --ease: 180ms cubic-bezier(0.2, 0.8, 0.25, 1);
     }
 
-    :root, [data-theme="light"] {
-      --color-bg:           #f5f5f4;
-      --color-surface:      #ffffff;
-      --color-surface-2:    #fafaf9;
-      --color-border:       rgba(0,0,0,0.1);
-      --color-border-hover: rgba(14,165,233,0.5);
-      --color-divider:      rgba(0,0,0,0.07);
-      --color-text:         #111827;
-      --color-text-muted:   #6b7280;
-      --color-text-faint:   #9ca3af;
-      --color-primary:      #0ea5e9;
-      --color-accent-line:  rgba(14,165,233,0.35);
-      --color-tag-bg:       rgba(14,165,233,0.08);
-      --color-tag-text:     #0369a1;
-      --color-tag-border:   rgba(14,165,233,0.2);
-      --color-green:        #16a34a;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-      --shadow-hover: 0 6px 24px rgba(14,165,233,0.18), 0 2px 8px rgba(0,0,0,0.06);
+    /* --- 既定はダーク（OSがライト設定なら自動でライト） --- */
+    :root {
+      color-scheme: dark;
+      --bg:        #171c22;
+      --panel:     #1e242c;
+      --raised:    #262e38;
+      --line:      rgba(255,255,255,0.09);
+      --line-soft: rgba(255,255,255,0.05);
+      --ink:       #e9e7e2;
+      --muted:     #96a0aa;
+      --amber:     #e6a34a;
+      --amber-dim: rgba(230,163,74,0.30);
+      --amber-bg:  rgba(230,163,74,0.10);
+      --amber-glow:rgba(230,163,74,0.16);
+      --moss:      #7fb069;
+      --moss-dim:  rgba(127,176,105,0.28);
+      --moss-bg:   rgba(127,176,105,0.09);
+      --grid:      rgba(255,255,255,0.035);
+      --shade:     0 1px 0 rgba(255,255,255,0.03) inset;
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme]) { color-scheme: light;
+        --bg: #eae8e3; --panel: #f7f6f3; --raised: #efede8;
+        --line: rgba(26,31,37,0.13); --line-soft: rgba(26,31,37,0.07);
+        --ink: #1a1f25; --muted: #5c656e;
+        --amber: #8a5512; --amber-dim: rgba(138,85,18,0.32);
+        --amber-bg: rgba(138,85,18,0.07); --amber-glow: rgba(190,130,40,0.18);
+        --moss: #3f6b34; --moss-dim: rgba(63,107,52,0.30); --moss-bg: rgba(63,107,52,0.07);
+        --grid: rgba(26,31,37,0.045); --shade: none;
+      }
+    }
+    [data-theme="light"] { color-scheme: light;
+      --bg: #eae8e3; --panel: #f7f6f3; --raised: #efede8;
+      --line: rgba(26,31,37,0.13); --line-soft: rgba(26,31,37,0.07);
+      --ink: #1a1f25; --muted: #5c656e;
+      --amber: #8a5512; --amber-dim: rgba(138,85,18,0.32);
+      --amber-bg: rgba(138,85,18,0.07); --amber-glow: rgba(190,130,40,0.18);
+      --moss: #3f6b34; --moss-dim: rgba(63,107,52,0.30); --moss-bg: rgba(63,107,52,0.07);
+      --grid: rgba(26,31,37,0.045); --shade: none;
+    }
+    [data-theme="dark"] { color-scheme: dark;
+      --bg: #171c22; --panel: #1e242c; --raised: #262e38;
+      --line: rgba(255,255,255,0.09); --line-soft: rgba(255,255,255,0.05);
+      --ink: #e9e7e2; --muted: #96a0aa;
+      --amber: #e6a34a; --amber-dim: rgba(230,163,74,0.30);
+      --amber-bg: rgba(230,163,74,0.10); --amber-glow: rgba(230,163,74,0.16);
+      --moss: #7fb069; --moss-dim: rgba(127,176,105,0.28); --moss-bg: rgba(127,176,105,0.09);
+      --grid: rgba(255,255,255,0.035); --shade: 0 1px 0 rgba(255,255,255,0.03) inset;
     }
 
-    [data-theme="dark"] {
-      --color-bg:           #0d1117;
-      --color-surface:      #161b22;
-      --color-surface-2:    #1c2128;
-      --color-border:       rgba(255,255,255,0.08);
-      --color-border-hover: rgba(56,189,248,0.45);
-      --color-divider:      rgba(255,255,255,0.05);
-      --color-text:         #e6edf3;
-      --color-text-muted:   #8b949e;
-      --color-text-faint:   #484f58;
-      --color-primary:      #38bdf8;
-      --color-accent-line:  rgba(56,189,248,0.3);
-      --color-tag-bg:       rgba(56,189,248,0.08);
-      --color-tag-text:     #7dd3fc;
-      --color-tag-border:   rgba(56,189,248,0.15);
-      --color-green:        #3fb950;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
-      --shadow-hover: 0 6px 24px rgba(56,189,248,0.12), 0 2px 8px rgba(0,0,0,0.3);
-    }
-
+    /* =========================================================
+       Base
+       ========================================================= */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-font-smoothing: antialiased; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
       min-height: 100dvh;
-      font-family: var(--font-body);
-      font-size: var(--text-base);
-      color: var(--color-text);
-      background: var(--color-bg);
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      font-size: var(--fs-body);
+      line-height: 1.8;
       display: flex;
-      align-items: center;
       justify-content: center;
-      padding: var(--space-6) var(--space-4);
+      padding: clamp(2rem, 6vh, 4.5rem) var(--sp-5) var(--sp-10);
+      position: relative;
+      overflow-x: hidden;
+    }
+    /* ブロック世界を思わせる方眼。中央上部から外側へフェードさせる */
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 28px 28px;
+      background-position: center top;
+      -webkit-mask-image: radial-gradient(115% 60% at 50% 4%, #000 0%, transparent 72%);
+              mask-image: radial-gradient(115% 60% at 50% 4%, #000 0%, transparent 72%);
     }
     img { display: block; max-width: 100%; }
-    button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; }
-    :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: var(--radius-sm); }
+    ul { list-style: none; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: var(--r-xs); }
+
+    .shell { position: relative; z-index: 1; width: 100%; max-width: 540px; }
+
+    /* =========================================================
+       Theme switch（ブロック型の小さなボタン）
+       ========================================================= */
+    .theme-switch {
+      position: fixed; top: var(--sp-4); right: var(--sp-4); z-index: 10;
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      background: var(--panel); color: var(--muted);
+      border: 1px solid var(--line); border-radius: var(--r-sm);
+      cursor: pointer; box-shadow: var(--shade);
+      transition: color var(--ease), border-color var(--ease);
+    }
+    .theme-switch:hover { color: var(--amber); border-color: var(--amber-dim); }
+    .theme-switch svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+    .icon-moon { display: none; }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme]) .icon-sun  { display: none; }
+      :root:not([data-theme]) .icon-moon { display: block; }
+    }
+    [data-theme="light"] .icon-sun  { display: none; }
+    [data-theme="light"] .icon-moon { display: block; }
+    [data-theme="dark"]  .icon-sun  { display: block; }
+    [data-theme="dark"]  .icon-moon { display: none; }
+
+    /* =========================================================
+       Identity（アイコンを「置かれたブロック」として扱う）
+       ========================================================= */
+    .ident {
+      display: flex; align-items: center; gap: var(--sp-5);
+      position: relative;
+    }
+    .ident__lamp {
+      position: absolute; left: -14%; top: 50%; z-index: -1;
+      width: 340px; height: 340px; transform: translateY(-50%);
+      background: radial-gradient(circle, var(--amber-glow) 0%, transparent 62%);
+      pointer-events: none;
+    }
+    .ident__block {
+      width: 92px; height: 92px; flex-shrink: 0;
+      border: 1px solid var(--line); border-radius: var(--r-md);
+      background: var(--raised); overflow: hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+    }
+    .ident__block img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+
+    .ident__name {
+      font-size: var(--fs-name); font-weight: 700;
+      letter-spacing: 0.06em; line-height: 1.15;
+    }
+    .ident__handle {
+      font-size: var(--fs-note); color: var(--muted);
+      letter-spacing: 0.03em; margin-top: 0.35rem;
+    }
+    .ident__role {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      margin-top: 0.55rem;
+      font-size: var(--fs-micro); font-weight: 500; color: var(--moss);
+    }
+    .pip { width: 6px; height: 6px; background: var(--moss); border-radius: 1px; }
+
+    .bio {
+      margin-top: var(--sp-6);
+      color: var(--muted);
+      border-left: 2px solid var(--amber-dim);
+      padding-left: var(--sp-4);
+    }
+
+    /* =========================================================
+       Facets（ゲーム / 技術）
+       ========================================================= */
+    .facets { margin-top: var(--sp-7); display: grid; gap: var(--sp-4); }
+    .facet { display: grid; gap: var(--sp-2); }
+    .facet__label { font-size: var(--fs-micro); color: var(--muted); line-height: 1.4; }
+    .chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+    .chips li {
+      font-size: var(--fs-micro); line-height: 1.6;
+      padding: 0.15rem 0.5rem;
+      border: 1px solid var(--line); border-radius: var(--r-xs);
+      color: var(--muted); background: var(--panel);
+    }
+    .chips--play li { color: var(--moss); border-color: var(--moss-dim); background: var(--moss-bg); }
+
+    /* =========================================================
+       Links（1枚のパネル＋ヘアラインで区切る）
+       ========================================================= */
+    .links {
+      margin-top: var(--sp-8);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: var(--shade);
+    }
+    .link {
+      display: grid;
+      grid-template-columns: 38px 1fr auto;
+      align-items: center; gap: var(--sp-4);
+      padding: var(--sp-4) var(--sp-5);
+      transition: background var(--ease);
+    }
+    .link + .link { border-top: 1px solid var(--line-soft); }
+    .link:hover { background: var(--raised); }
+
+    .link__icon {
+      width: 38px; height: 38px; display: grid; place-items: center;
+      border: 1px solid var(--line); border-radius: var(--r-sm);
+      color: var(--muted); background: var(--bg);
+      transition: color var(--ease), border-color var(--ease);
+    }
+    .link__icon svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .link:hover .link__icon { color: var(--amber); border-color: var(--amber-dim); }
+
+    .link__title { font-size: var(--fs-title); font-weight: 500; letter-spacing: 0.01em; }
+    .link__note { font-size: var(--fs-note); color: var(--muted); line-height: 1.6; margin-top: 0.1rem; }
+    .link__where {
+      font-size: var(--fs-micro); color: var(--muted);
+      letter-spacing: 0.02em; white-space: nowrap;
+      transition: color var(--ease);
+    }
+    .link:hover .link__where { color: var(--amber); }
+
+    /* 一番見てほしい行だけ灯りを入れる */
+    .link--lit .link__icon { color: var(--amber); border-color: var(--amber-dim); background: var(--amber-bg); }
+    .link--lit .link__title { font-weight: 700; }
+
+    .foot {
+      margin-top: var(--sp-6);
+      font-size: var(--fs-micro); color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    /* =========================================================
+       Motion：ページ読み込み時の1回だけ。ブロックが置かれる動き
+       ========================================================= */
+    @keyframes settle {
+      from { opacity: 0; transform: translateY(-9px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes lampUp {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .ident__block { animation: settle 520ms cubic-bezier(0.2, 0.9, 0.2, 1) both; }
+    .ident__lamp  { animation: lampUp 1100ms 160ms ease-out both; }
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
     }
 
-    /* ── Theme Toggle ── */
-    .theme-toggle {
-      position: fixed; top: var(--space-4); right: var(--space-4); z-index: 100;
-      width: 36px; height: 36px; border-radius: var(--radius-full);
-      background: var(--color-surface); border: 1px solid var(--color-border);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--color-text-muted); box-shadow: var(--shadow-sm);
-      transition: color var(--transition), border-color var(--transition);
-    }
-    .theme-toggle:hover { color: var(--color-primary); border-color: var(--color-border-hover); }
-    .theme-toggle svg { width: 16px; height: 16px; }
-
-    /* ── Page Layout ── */
-    .page-wrap {
-      width: 100%; max-width: 820px;
-      display: grid; grid-template-columns: 230px 1fr;
-      gap: var(--space-4); align-items: start;
-    }
-
-    /* ── Profile Card ── */
-    .profile-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6) var(--space-5);
-      display: flex; flex-direction: column;
-      align-items: center; text-align: center;
-      gap: var(--space-4);
-      box-shadow: var(--shadow-md);
-      position: sticky; top: var(--space-6);
-    }
-
-    .avatar-wrap { position: relative; width: 96px; height: 96px; }
-    .avatar-img {
-      width: 96px; height: 96px; border-radius: var(--radius-full);
-      overflow: hidden; background: var(--color-surface-2);
-      border: 2px solid var(--color-border);
-    }
-    .avatar-img img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
-    .avatar-ring {
-      position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px); border-radius: var(--radius-full);
-      border: 2px solid transparent;
-      background:
-        linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
-        conic-gradient(from 0deg, var(--color-primary), transparent 55%, var(--color-primary)) border-box;
-      animation: ring-spin 6s linear infinite;
-    }
-    @keyframes ring-spin { to { transform: rotate(360deg); } }
-
-    .status-badge {
-      position: absolute; bottom: 0; right: -2px;
-      background: var(--color-surface); border: 1.5px solid var(--color-border);
-      border-radius: var(--radius-full); padding: 2px 7px 2px 5px;
-      display: flex; align-items: center; gap: 4px;
-      font-size: 10px; font-weight: 600; color: var(--color-green);
-      white-space: nowrap; box-shadow: var(--shadow-sm);
-    }
-    .status-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--color-green); box-shadow: 0 0 6px var(--color-green);
-    }
-
-    .profile-name {
-      font-family: var(--font-mono); font-size: var(--text-xl);
-      font-weight: 600; color: var(--color-text); line-height: 1.1;
-    }
-    .profile-handle {
-      font-family: var(--font-mono); font-size: var(--text-xs);
-      color: var(--color-primary); letter-spacing: 0.04em;
-      margin-top: calc(var(--space-1) * -1);
-    }
-    .profile-role {
-      font-size: var(--text-xs); color: var(--color-text-muted);
-      font-weight: 500; line-height: 1.5;
-    }
-
-    .profile-bio {
-      font-size: var(--text-sm); color: var(--color-text-muted);
-      line-height: 1.7; text-align: left;
-      border-left: 2px solid var(--color-accent-line);
-      padding-left: var(--space-3);
-    }
-
-    .section-label {
-      align-self: stretch;
-      font-family: var(--font-mono); font-size: 10px;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--color-text-faint);
-      display: flex; align-items: center; gap: var(--space-2);
-    }
-    .section-label::after {
-      content: ''; flex: 1; height: 1px; background: var(--color-divider);
-    }
-
-    .tag-row {
-      display: flex; flex-wrap: wrap; gap: var(--space-2);
-      justify-content: center; align-self: stretch;
-    }
-    .tag {
-      font-family: var(--font-mono); font-size: 10.5px;
-      padding: 3px 9px; border-radius: var(--radius-sm);
-      background: var(--color-tag-bg); border: 1px solid var(--color-tag-border);
-      color: var(--color-tag-text);
-    }
-    .tag.game {
-      background: rgba(52,211,153,0.07); border-color: rgba(52,211,153,0.2); color: #34d399;
-    }
-    [data-theme="light"] .tag.game {
-      background: rgba(16,185,129,0.07); border-color: rgba(16,185,129,0.22); color: #059669;
-    }
-
-    /* ── Links Panel ── */
-    .links-panel { display: flex; flex-direction: column; gap: var(--space-3); }
-
-    .links-header {
-      background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl); padding: var(--space-5) var(--space-6);
-      box-shadow: var(--shadow-sm);
-    }
-    .links-header-title {
-      font-family: var(--font-mono); font-size: var(--text-lg);
-      font-weight: 600; color: var(--color-text);
-      display: flex; align-items: center; gap: var(--space-2);
-    }
-    .links-header-title::before { content: '//'; color: var(--color-primary); font-weight: 400; }
-    .links-header-sub {
-      margin-top: var(--space-2); font-size: var(--text-sm);
-      color: var(--color-text-muted); line-height: 1.6;
-    }
-
-    .link-item {
-      background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg); padding: var(--space-4) var(--space-5);
-      display: flex; align-items: center; gap: var(--space-4);
-      cursor: pointer; box-shadow: var(--shadow-sm);
-      transition: transform var(--transition), box-shadow var(--transition),
-                  border-color var(--transition), background var(--transition);
-      position: relative; overflow: hidden;
-    }
-    .link-item::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-      background: var(--color-primary); opacity: 0;
-      transition: opacity var(--transition);
-    }
-    .link-item:hover {
-      transform: translateX(4px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--color-border-hover);
-      background: var(--color-surface-2);
-    }
-    .link-item:hover::before { opacity: 1; }
-    .link-item:active { transform: translateX(2px); }
-
-    .link-icon {
-      width: 40px; height: 40px; border-radius: var(--radius-md);
-      background: var(--color-surface-2); border: 1px solid var(--color-border);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      transition: border-color var(--transition);
-    }
-    .link-item:hover .link-icon { border-color: var(--color-border-hover); }
-    .link-icon svg {
-      width: 18px; height: 18px; stroke: var(--color-primary);
-      stroke-width: 1.75; fill: none;
-    }
-
-    .link-body { flex: 1; min-width: 0; }
-    .link-title {
-      font-family: var(--font-mono); font-size: var(--text-sm);
-      font-weight: 600; color: var(--color-text);
-    }
-    .link-desc {
-      font-size: var(--text-xs); color: var(--color-text-muted);
-      margin-top: 3px; line-height: 1.5;
-    }
-
-    .link-meta { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
-    .link-badge {
-      font-family: var(--font-mono); font-size: 10px;
-      padding: 2px 8px; border-radius: var(--radius-sm);
-      background: var(--color-tag-bg); border: 1px solid var(--color-tag-border);
-      color: var(--color-tag-text);
-    }
-    .link-arrow {
-      color: var(--color-text-faint); display: flex; align-items: center;
-      transition: color var(--transition), transform var(--transition);
-    }
-    .link-item:hover .link-arrow { color: var(--color-primary); transform: translate(2px, -2px); }
-    .link-arrow svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
-
-    .footer {
-      text-align: center; padding: var(--space-3);
-      font-family: var(--font-mono); font-size: var(--text-xs);
-      color: var(--color-text-faint);
-    }
-
-    @media (max-width: 640px) {
-      body { padding: var(--space-4) var(--space-3); align-items: flex-start; }
-      .page-wrap { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
-      .profile-card { position: static; }
+    /* =========================================================
+       Responsive
+       ========================================================= */
+    @media (max-width: 480px) {
+      .ident { gap: var(--sp-4); }
+      .ident__block { width: 76px; height: 76px; }
+      .link { grid-template-columns: 34px 1fr; gap: var(--sp-3); padding: var(--sp-4); }
+      .link__icon { width: 34px; height: 34px; }
+      .link__where { display: none; }
+      .theme-switch { top: var(--sp-3); right: var(--sp-3); }
     }
   </style>
 </head>
 <body>
-  <button class="theme-toggle" data-theme-toggle aria-label="ライトモードに切り替え">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="5"/>
-      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+  <button class="theme-switch" type="button" data-theme-switch aria-label="配色を切り替える">
+    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5"/>
+      <path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a6.6 6.6 0 0 0 10.8 10.8z"/>
     </svg>
   </button>
 
-  <div class="page-wrap">
-    <aside>
-      <div class="profile-card">
-        <div class="avatar-wrap">
-          <div class="avatar-ring"></div>
-          <div class="avatar-img">
-            <img src="./images/koko_icon.png" alt="ココのアイコン" width="96" height="96">
-          </div>
-          <div class="status-badge">
-            <span class="status-dot"></span>新井鯖
-          </div>
-        </div>
-
-        <div>
-          <div class="profile-name">ココ</div>
-          <div class="profile-handle">@kokopscraft</div>
-        </div>
-
-        <div class="profile-role">Arai Server — Technical Division</div>
-
-        <p class="profile-bio">
-          新井鯖の技術部門に所属し、サーバーの技術基盤の設計・開発・保守を担当。Minecraft向けの仕組み作りが得意です。
-        </p>
-
-        <div class="section-label">GAMES</div>
-        <div class="tag-row">
-          <span class="tag game">Minecraft JE</span>
-          <span class="tag game">Apex Legends</span>
-        </div>
-
-        <div class="section-label">STACK</div>
-        <div class="tag-row">
-          <span class="tag">Python</span>
-          <span class="tag">C</span>
-          <span class="tag">JavaScript</span>
-          <span class="tag">HTML/CSS</span>
-          <span class="tag">mcfunction</span>
-          <span class="tag">Server Ops</span>
-        </div>
+  <div class="shell">
+    <header class="ident">
+      <div class="ident__lamp" aria-hidden="true"></div>
+      <div class="ident__block">
+        <img src="./images/koko_icon.png" alt="ココのアイコン" width="92" height="92">
       </div>
-    </aside>
-
-    <main>
-      <div class="links-panel">
-        <div class="links-header">
-          <div class="links-header-title">Links</div>
-          <div class="links-header-sub">
-            ココに関する主要なリンクをまとめています。新井鯖関連・開発リポジトリ・ゲームアカウントなど。
-          </div>
-        </div>
-
-        <article class="link-item" role="link" tabindex="0" data-href="https://arai-server.pages.dev/">
-          <div class="link-icon">
-            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-          </div>
-          <div class="link-body">
-            <div class="link-title">Arai Server</div>
-            <div class="link-desc">新井鯖公式サイト。技術部門として参加しているMinecraftサーバー。</div>
-          </div>
-          <div class="link-meta">
-            <span class="link-badge">Minecraft</span>
-            <span class="link-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg></span>
-          </div>
-        </article>
-
-        <article class="link-item" role="link" tabindex="0" data-href="https://github.com/kokopscraft">
-          <div class="link-icon">
-            <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          </div>
-          <div class="link-body">
-            <div class="link-title">GitHub</div>
-            <div class="link-desc">開発中のツールやサーバー関連スクリプトを公開しています。</div>
-          </div>
-          <div class="link-meta">
-            <span class="link-badge">Code</span>
-            <span class="link-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg></span>
-          </div>
-        </article>
-
-        <article class="link-item" role="link" tabindex="0" data-href="https://discordapp.com/users/@1195926029185843235">
-          <div class="link-icon">
-            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div class="link-body">
-            <div class="link-title">Discord</div>
-            <div class="link-desc">連絡・通話はこちらから。新井鯖関連の連絡もここで受け付けています。</div>
-          </div>
-          <div class="link-meta">
-            <span class="link-badge">Contact</span>
-            <span class="link-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg></span>
-          </div>
-        </article>
-
-        <article class="link-item" role="link" tabindex="0" data-href="https://steamcommunity.com/profiles/76561199753320100">
-          <div class="link-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.24 2.65 7.86 6.39 9.29L12 14h3c1.66 0 3-1.34 3-3s-1.34-3-3-3H9.07l1.93-4.29C10.68 3.28 11.33 3 12 3"/><circle cx="17" cy="11" r="1"/></svg>
-          </div>
-          <div class="link-body">
-            <div class="link-title">Steam</div>
-            <div class="link-desc">主にApex Legendsなど、PCゲーム用のアカウントです。</div>
-          </div>
-          <div class="link-meta">
-            <span class="link-badge">Game</span>
-            <span class="link-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg></span>
-          </div>
-        </article>
-
-        <footer class="footer">© 2026 Koko. All rights reserved.</footer>
+      <div>
+        <h1 class="ident__name">ココ</h1>
+        <p class="ident__handle">@kokopscraft</p>
+        <p class="ident__role"><span class="pip" aria-hidden="true"></span>新井鯖 技術部門</p>
       </div>
-    </main>
+    </header>
+
+    <p class="bio">
+      Minecraftサーバー「新井鯖」の技術部門で、
+      サーバーの固有アドオンの作成や編集、公式Webサイトの更新を担当しています。
+    </p>
+
+    <section class="facets">
+      <div class="facet">
+        <span class="facet__label">ゲーム</span>
+        <ul class="chips chips--play">
+          <li>Minecraft</li>
+          <li>Apex Legends</li>
+        </ul>
+      </div>
+      <div class="facet">
+        <span class="facet__label">得意言語</span>
+        <ul class="chips">
+          <li>Python</li>
+          <li>C</li>
+          <li>JavaScript</li>
+          <li>MCFunction</li>
+          <li>Java</li>
+        </ul>
+      </div>
+    </section>
+
+    <nav class="links" aria-label="リンク集">
+      <a class="link link--lit" href="https://arai-server.pages.dev/" target="_blank" rel="noopener">
+        <span class="link__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3.5" width="18" height="7" rx="1.5"/>
+            <rect x="3" y="13.5" width="18" height="7" rx="1.5"/>
+            <path d="M6.5 7h.01M6.5 17h.01"/>
+          </svg>
+        </span>
+        <span>
+          <span class="link__title">Arai Server</span>
+          <span class="link__note">新井鯖の公式サイト</span>
+        </span>
+        <span class="link__where">arai-server.pages.dev</span>
+      </a>
+
+      <a class="link" href="https://github.com/kokopscraft" target="_blank" rel="noopener">
+        <span class="link__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          </svg>
+        </span>
+        <span>
+          <span class="link__title">GitHub</span>
+          <span class="link__note">ココのリポジトリ</span>
+        </span>
+        <span class="link__where">github.com/kokopscraft</span>
+      </a>
+
+      <a class="link" href="https://discord.com/users/1065531282068607147" target="_blank" rel="noopener">
+        <span class="link__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 14.5a2 2 0 0 1-2 2H8l-4 3.5V5.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/>
+            <path d="M9 10h.01M12 10h.01M15 10h.01"/>
+          </svg>
+        </span>
+        <span>
+          <span class="link__title">Discord</span>
+          <span class="link__note">連絡はこちらへ。</span>
+        </span>
+        <span class="link__where">@koko.31</span>
+      </a>
+
+      <a class="link" href="https://steamcommunity.com/profiles/76561199753320100" target="_blank" rel="noopener">
+        <span class="link__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <rect x="2.5" y="7" width="19" height="10" rx="3.5"/>
+            <path d="M7 10.5v3M5.5 12h3"/>
+            <path d="M16 11h.01M18.5 13.5h.01"/>
+          </svg>
+        </span>
+        <span>
+          <span class="link__title">Steam</span>
+          <span class="link__note">PCゲーム用のアカウント</span>
+        </span>
+        <span class="link__where">steamcommunity.com</span>
+      </a>
+    </nav>
+
+    <p class="foot">© 2026 Koko</p>
   </div>
 
   <script>
-    (function(){
-      const t = document.querySelector('[data-theme-toggle]');
-      const r = document.documentElement;
-      let d = 'dark';
-      r.setAttribute('data-theme', d);
-      if (t) {
-        t.addEventListener('click', function(){
-          d = d === 'dark' ? 'light' : 'dark';
-          r.setAttribute('data-theme', d);
-          t.setAttribute('aria-label', d === 'dark' ? 'ライトモードに切り替え' : 'ダークモードに切り替え');
-          t.innerHTML = d === 'dark'
-            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
-            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
-        });
-      }
-    })();
+    (function () {
+      var root = document.documentElement;
+      var btn = document.querySelector('[data-theme-switch]');
+      if (!btn) return;
 
-    document.querySelectorAll('.link-item').forEach(function(item) {
-      item.addEventListener('click', function() {
-        var url = item.getAttribute('data-href');
-        if (url) window.open(url, '_blank', 'noopener noreferrer');
+      btn.addEventListener('click', function () {
+        var current = root.getAttribute('data-theme');
+        if (!current) {
+          current = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
       });
-      item.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.click(); }
-      });
-    });
+    })();
   </script>
 </body>
 </html>
